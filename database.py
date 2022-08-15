@@ -20,7 +20,7 @@ class Database:
         logger.info(f"Database connected")
         async with self.pool.acquire() as conn:
             await conn.execute("""CREATE TABLE IF NOT EXISTS messages (
-                    ts DOUBLE PRIMARY KEY,
+                    ts DECIMAL PRIMARY KEY,
                     id VARCHAR NOT NULL,
                     user_id VARCHAR NOT NULL,
                     text TEXT NOT NULL
