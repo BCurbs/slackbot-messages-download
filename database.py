@@ -33,8 +33,11 @@ class Database:
             INSERT OR IGNORE INTO messages(ts, id, user, text)
             VALUES($1, $2, $3, $4);
             """, message.ts, message.id, message.user, message.text)
+        logger.success("Added message to database")
 
     async def database_dump_messages(self, messages: List[Message]):
+        logger.info(f"Adding {len(messages)} messages to database")
+        logger.trace(messages)
         messages_tuple: List[Tuple] = []
         for message in messages:
             messages_tuple.append((message.ts, message.id, message.user, message.text))
@@ -43,6 +46,7 @@ class Database:
             INSERT OR IGNORE INTO messages(ts, id, user, text)
             VALUES($1, $2, $3, $4);
             """, messages_tuple)
+        logger.success(f"Added {len(messages)} to database")
 
 
 db: Database = Database()

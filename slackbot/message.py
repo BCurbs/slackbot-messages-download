@@ -8,3 +8,6 @@ class Message:
         self.type = body['type']
         self.user = body['user']
         self.text = body['text']
+
+    def __str__(self):
+        return f"{self.ts}, {self.type}, {self.user}, {self.text}"
