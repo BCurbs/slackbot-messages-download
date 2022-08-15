@@ -17,7 +17,7 @@ class Config:
         self.slack_app_token: str = self.config['slack_app_token']
         self.slack_bot_token: str = self.config['slack_bot_token']
         self.db_url: str = self.config['db_url']
-        self.log_level = self.config['log_level']
+        self.log_level: str = self.config['log_level'].upper()
         self.check_values()
 
     def update_file(self):
