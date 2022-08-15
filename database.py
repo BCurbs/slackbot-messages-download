@@ -16,7 +16,7 @@ class Database:
 
     async def init(self):
         logger.debug(f"Starting db init, connecting {config.db_url}")
-        self.pool: asyncpg.Pool = await asyncpg.connect(config.db_url)
+        self.pool: asyncpg.Pool = await asyncpg.create_pool(config.db_url)
         logger.info(f"Database connected")
         async with self.pool.acquire() as conn:
             await conn.execute("""CREATE TABLE IF NOT EXISTS messages (
