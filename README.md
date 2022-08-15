@@ -10,7 +10,7 @@ This bot requires python 3. It was developed in python 3.10, and should work in 
 
 For linux, `python` in commands should be replaced with `python3`
 
-1. Open your command line/terminal interface and go to the directory where Dozer's code is located.
+1. Open your command line/terminal interface and go to the directory where the bot's code is located.
     1. If you're not familiar with how to do that:
         1. On Windows, open CMD or Powershell. On Mac and Linux, open the Terminal. and type `cd "path/to/directory"`.
            Alternatively, on Windows, go to the directory in the File Explorer app. Click the bar that is circled in the image below and type `cmd`. Press enter and the command line should open up within that directory. Also, you can use an integrated terminal with an IDE of your choice.
