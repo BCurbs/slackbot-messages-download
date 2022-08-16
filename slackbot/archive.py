@@ -5,7 +5,7 @@ from slack_sdk.web.async_client import AsyncWebClient
 
 from config import Config
 from database import db
-from slackbot.message import Message
+from slackbot.message import Message, get_all_users
 from slackbot.subapp import SubApp
 
 archive_app = SubApp()
@@ -13,17 +13,18 @@ config = Config()
 client = AsyncWebClient(token=config.slack_bot_token)
 
 
-async def fetch_all_messages(channel: str, run_limit: int = -1):
+async def fetch_all_messages(channel: str, channel_name: str, run_limit: int = -1):
+    await get_all_users()
     messages: List[Message] = []
     result = await client.conversations_history(channel=channel, limit=200)
-    messages.extend([Message(body) for body in result['messages']])
+    messages.extend([Message(body, channel, channel_name) for body in result['messages']])
     i = 0
     while 'next_cursor' in result:
         if i == run_limit:
             return messages
         cursor = result['next_cursor']
         result = await client.conversations_history(channel=channel, limit=200, cursor=cursor)
-        messages.extend([Message(body) for body in result['messages']])
+        messages.extend([Message(body, channel, channel_name) for body in result['messages']])
         i += 1
 
     return messages
@@ -34,7 +35,7 @@ async def archive_all(command):
     logger.info(f"Starting to download messages from {command.channel_id}")
     await client.chat_postMessage(channel=command.channel_id, text=f"Starting download of messages from <#{command.channel_id}|>.")
     logger.debug(f"Sent message to {command.channel_id}")
-    messages: List[Message] = await fetch_all_messages(command.channel_id)
+    messages: List[Message] = await fetch_all_messages(command.channel_id, command.channel_name)
     await client.chat_postMessage(channel=command.channel_id,
                                   text=f"{len(messages)} messages downloaded, adding to database. ")
     logger.debug('Messages downloaded, adding to database. ')
