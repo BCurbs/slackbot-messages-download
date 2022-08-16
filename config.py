@@ -6,8 +6,8 @@ class Config:
     config_file = 'config.json'
     config = {
         'slack_app_token': 'app token here',
-        'slack_bot_token': 'bot_token_here',
-        'db_url': 'db_url_here',
+        'slack_bot_token': 'bot token here',
+        'db_url': 'database url here',
         'log_level': "info"
     }
 

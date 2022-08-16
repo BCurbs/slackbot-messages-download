@@ -27,8 +27,8 @@ async def main():
     await db.init()
     app = AsyncApp(token=config.slack_app_token)
     archive_app.register_to(app)
-    logger.debug("Subapps registered")
-    await AsyncSocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start_async()
+    logger.debug("Sub-apps registered")
+    await AsyncSocketModeHandler(app, config.slack_app_token).start_async()
 
 
 if __name__ == "__main__":

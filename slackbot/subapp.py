@@ -1,4 +1,7 @@
+from loguru import logger
 from slack_bolt.app.async_app import AsyncApp
+
+from slackbot.command import Command
 
 
 class SubApp:
@@ -17,7 +20,14 @@ class SubApp:
 
     def command(self, *args, **kwargs):
         def __call__(func):
-            self.commands.append((args, kwargs, func))
+            async def __func__(ack, body):
+                command = Command(body)
+                logger.trace(
+                    f"Acknowledging command {command.command}, triggered by {command.user_name} ({command.user_id}) in "
+                    f"{command.channel_name} ({command.channel_id})")
+                await ack()
+                return await func(command)
+            self.commands.append((args, kwargs, __func__))
             return func
 
         return __call__

@@ -30,23 +30,21 @@ async def fetch_all_messages(channel: str, run_limit: int = -1):
 
 
 @archive_app.command('/archivechannel')
-async def archive_all(ack, body):
-    await ack()
-    channel_id = body['channel_id']
-    logger.info(f"Starting to download messages from {channel_id}")
-    await client.chat_postMessage(channel=channel_id, text=f"Starting download of messages from <#{channel_id}|>.")
-    logger.trace(body)
-    messages: List[Message] = await fetch_all_messages(channel_id)
-    await client.chat_postMessage(channel=channel_id,
+async def archive_all(command):
+    logger.trace(f"Received archivechannel command for {command.channel_id}")
+    logger.info(f"Starting to download messages from {command.channel_id}")
+    await client.chat_postMessage(channel=command.channel_id, text=f"Starting download of messages from <#{command.channel_id}|>.")
+    logger.debug(f"Sent message to {command.channel_id}")
+    messages: List[Message] = await fetch_all_messages(command.channel_id)
+    await client.chat_postMessage(channel=command.channel_id,
                                   text=f"{len(messages)} messages downloaded, adding to database. ")
     logger.debug('Messages downloaded, adding to database. ')
     await db.database_dump_messages(messages)
-    await client.chat_postMessage(channel=channel_id, text="Messages added to database. ")
+    await client.chat_postMessage(channel=command.channel_id, text="Messages added to database. ")
 
 
 @archive_app.command('/ping')
-async def ping(ack, body):
-    await ack()
-    channel_id = body['channel_id']
-    await client.chat_postMessage(channel=channel_id, text="Pong!")
+async def ping(command):
+    logger.debug(f"Received ping command in {command.channel_id}")
+    await client.chat_postMessage(channel=command.channel_id, text=f"<@{command.user_id}> | Pong!")
     logger.success("Ping command replied to. ")

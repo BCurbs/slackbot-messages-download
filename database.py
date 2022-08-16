@@ -30,21 +30,23 @@ class Database:
     async def new_message(self, message: Message):
         async with self.pool.acquire() as conn:
             await conn.execute("""
-            INSERT OR IGNORE INTO messages(ts, id, user_id, text)
-            VALUES($1, $2, $3, $4);
+            INSERT INTO messages(ts, id, user_id, text)
+            VALUES($1, $2, $3, $4)
+            ON CONFLICT(ts) DO NOTHING;
             """, message.ts, message.id, message.user, message.text)
         logger.success("Added message to database")
 
     async def database_dump_messages(self, messages: List[Message]):
-        logger.info(f"Adding {len(messages)} messages to database")
+        logger.debug(f"Adding {len(messages)} messages to database")
         logger.trace(messages)
         messages_tuple: List[Tuple] = []
         for message in messages:
             messages_tuple.append((message.ts, message.id, message.user, message.text))
         async with self.pool.acquire() as conn:
             await conn.executemany("""
-            INSERT OR IGNORE INTO messages(ts, id, user_id, text)
-            VALUES($1, $2, $3, $4);
+            INSERT INTO messages(ts, id, user_id, text)
+            VALUES($1, $2, $3, $4)
+            ON CONFLICT(ts) DO NOTHING;
             """, messages_tuple)
         logger.success(f"Added {len(messages)} to database")
 
