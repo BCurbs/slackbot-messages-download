@@ -22,7 +22,7 @@ class SubApp:
         def __call__(func):
             async def __func__(ack, body):
                 command = Command(body)
-                logger.trace(
+                logger.debug(
                     f"Acknowledging command {command.command}, triggered by {command.user_name} ({command.user_id}) in "
                     f"{command.channel_name} ({command.channel_id})")
                 await ack()
