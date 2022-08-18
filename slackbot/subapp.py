@@ -47,6 +47,7 @@ class SubApp:
         return __call__
 
     def register_to(self, app: AsyncApp):
+        logger.trace(f"Adding app")
         for args, kwargs, func in self.actions:
             app.action(*args, **kwargs)(func)
         for args, kwargs, func in self.commands:

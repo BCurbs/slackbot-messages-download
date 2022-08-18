@@ -33,7 +33,8 @@ async def fetch_all_messages(channel: str, channel_name: str, run_limit: int = -
 @archive_app.command('/archivechannel')
 async def archive_all(command):
     logger.info(f"Starting to download messages from {command.channel_id}")
-    await client.chat_postMessage(channel=command.channel_id, text=f"Starting download of messages from <#{command.channel_id}|>.")
+    await client.chat_postMessage(channel=command.channel_id,
+                                  text=f"Starting download of messages from <#{command.channel_id}|>.")
     logger.debug(f"Sent message to {command.channel_id}")
     messages: List[Message] = await fetch_all_messages(command.channel_id, command.channel_name)
     await client.chat_postMessage(channel=command.channel_id,

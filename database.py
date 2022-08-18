@@ -17,6 +17,7 @@ class Database:
     async def init(self):
         logger.debug(f"Starting db init, connecting {config.db_url}")
         self.pool: asyncpg.Pool = await asyncpg.create_pool(config.db_url)
+        logger.trace(f'Created pool, connected to {config.db_url}')
         logger.info(f"Database connected")
         async with self.pool.acquire() as conn:
             await conn.execute("""CREATE TABLE IF NOT EXISTS messages (
@@ -28,7 +29,7 @@ class Database:
                     channel_name VARCHAR NOT NULL,
                     text TEXT NOT NULL
                     )""")
-        logger.debug("Created tables")
+        logger.debug("Created table")
 
     async def new_message(self, message: Message):
         async with self.pool.acquire() as conn:
@@ -41,7 +42,7 @@ class Database:
         logger.success("Added message to database")
 
     async def database_dump_messages(self, messages: List[Message]):
-        logger.debug(f"Adding {len(messages)} messages to database")
+        logger.info(f"Adding {len(messages)} messages to database")
         messages_tuple: List[Tuple] = []
         for message in messages:
             messages_tuple.append((message.ts, message.id, message.user_id, await message.get_user_name(),

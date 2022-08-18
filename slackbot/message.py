@@ -36,6 +36,7 @@ class Message:
 
 
 def parse_user_name(profile) -> str:
+    logger.trace("Parsing user names for user")
     if 'real_name' in profile:
         return profile['real_name']
     else:
@@ -44,13 +45,16 @@ def parse_user_name(profile) -> str:
 
 async def get_all_users():
     global user_names
-    result = await client.users_list()
+    logger.trace("Getting all users for replacement")
+    result = await client.users_list(limit=1000)
+    logger.trace(f"Fetched {len(result['members'])} users")
     for user in result['members']:
         user_names[user['id']] = parse_user_name(user)
     logger.debug(f"Got {len(user_names)} users")
 
 
 def replace_user_ids(text: str) -> str:
+    logger.trace("Replacing user ID's")
     for user_id in user_names.keys():
         text = text.replace(user_id, user_names[user_id])
     return text
