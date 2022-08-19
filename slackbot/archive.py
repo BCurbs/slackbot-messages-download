@@ -1,4 +1,5 @@
 import urllib.request
+import requests
 from typing import List
 
 from loguru import logger
@@ -60,8 +61,13 @@ async def save_files(command):
 
 
 def save_file(filename, url):
+    headers = {'Authorization': f'Bearer {config.slack_bot_token}'}
+    r = requests.get(url, allow_redirects=True, headers=headers)
+    with open('/tmp/slack_files/'+filename, 'wb') as f:
+        for chunk in r.iter_content(1024):
+            f.write(chunk)
+
     print(url, filename)
-    urllib.request.urlretrieve(url, f'/tmp/slack_files/{filename}')
 
 
 @archive_app.command('/ping')

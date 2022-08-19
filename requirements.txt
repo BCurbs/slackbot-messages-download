@@ -3,3 +3,4 @@ loguru==0.6.0
 slack-bolt==1.14.3
 slack-sdk==3.18.1
 aiohttp>=3.7.4
+requests~=2.28.1
