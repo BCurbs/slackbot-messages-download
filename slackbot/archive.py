@@ -1,3 +1,4 @@
+import urllib.request
 from typing import List
 
 from loguru import logger
@@ -42,6 +43,25 @@ async def archive_all(command):
     logger.debug('Messages downloaded, adding to database. ')
     await db.database_dump_messages(messages)
     await client.chat_postMessage(channel=command.channel_id, text="Messages added to database. ")
+
+
+@archive_app.command('/downloadfiles')
+async def save_files(command):
+    results = await client.files_list()
+    logger.debug("Saved initial files list. ")
+    files = results['files']
+    logger.debug(results['paging'])
+    while results['paging']['pages'] > results['paging']['page']:
+        results = await client.files_list(page=results['paging']['page']+1)
+        files.extend(results['files'])
+    for file in files:
+        save_file(file['name'], file['permalink'])
+    await client.chat_postMessage(channel=command.channel_id, text=f"Downloaded {len(files)} files")
+
+
+def save_file(filename, url):
+    print(url, filename)
+    urllib.request.urlretrieve(url, f'/tmp/slack_files/{filename}')
 
 
 @archive_app.command('/ping')
