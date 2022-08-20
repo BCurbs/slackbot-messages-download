@@ -56,7 +56,10 @@ async def save_files(command):
         results = await client.files_list(page=results['paging']['page'] + 1)
         files.extend(results['files'])
     for file in files:
-        save_file(file['name'], file['url_private_download'])
+        try:
+            save_file(file['name'], file['url_private_download'])
+        except:
+            pass
     await client.chat_postMessage(channel=command.channel_id, text=f"Downloaded {len(files)} files")
 
 
