@@ -55,6 +55,7 @@ async def save_files(command):
     while results['paging']['pages'] > results['paging']['page']:
         results = await client.files_list(page=results['paging']['page'] + 1)
         files.extend(results['files'])
+    await client.chat_postMessage(channel=command.channel_id, text=f"Starting download of {len(files)} files")
     for file in files:
         try:
             save_file(file['name'], file['url_private_download'])
@@ -64,13 +65,13 @@ async def save_files(command):
 
 
 def save_file(filename, url):
+    print(url, filename)
     headers = {'Authorization': f'Bearer {config.slack_bot_token}'}
     r = requests.get(url, allow_redirects=True, headers=headers)
     with open('/tmp/slack_files/'+filename, 'wb') as f:
         for chunk in r.iter_content(1024):
             f.write(chunk)
 
-    print(url, filename)
 
 
 @archive_app.command('/ping')
