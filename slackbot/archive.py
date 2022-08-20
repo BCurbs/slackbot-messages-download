@@ -65,7 +65,7 @@ async def save_files(command):
 
 
 def save_file(filename, url):
-    print(url, filename)
+    logger.debug(url, filename)
     headers = {'Authorization': f'Bearer {config.slack_bot_token}'}
     r = requests.get(url, allow_redirects=True, headers=headers)
     with open('/tmp/slack_files/'+filename, 'wb') as f:
